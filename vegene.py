@@ -99,6 +99,8 @@ for i in range(0,length,5):
 print("plaintext:  ",final)
 
     
+# output
+# the almond tree was intentative blossom the days were longer often ending with magnificent evenings of corrugated pink skies the hunting season was over with hounds and guns put away for six months the vineyards were busy again as the well organized farmers treated their vines and the more lackadaisical neighbor shurried to do the pruning they should have done in november
 
 
 
