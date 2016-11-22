@@ -52,6 +52,13 @@ int main(){
 
 	byte decrypt_mes[4*Nb];
 	decrypt(cipher,decrypt_mes,w);
+	cout<<"decrypt mes is: "<<endl;
+	for(int i=0; i<16; ++i){
+		cout << hex << decrypt_mes[i].to_ulong() << " ";
+		if((i+1)%4 == 0)
+			cout << endl;
+	}
+	cout << endl;
 
 
 

@@ -83,8 +83,41 @@ void SubBytes(byte in[4*Nb]){
 
 	}
 }
-
 byte GF(byte coeff, byte mes){
+	bitset<16> px(0b0100011011);
+	bitset<16> ax;
+	for(int i=0;i<8;i++){
+		ax[i]=mes[i];
+	}
+	bitset<16> tmp;
+	for(int i=0;i<8;i++){
+		if(coeff[i]==1){
+			tmp^=(ax<<i);
+		}
+	}
+	// ax=(ax<<1)^(ax<<2)^(ax<<3);
+	ax=tmp;
+	int power=0;
+	while(ax.to_ulong()>=0x100){
+		power=0;
+		bitset<16> tmp=ax;
+		while(tmp.to_ulong()>0){
+			power++;
+			tmp=tmp>>1;
+		}
+		// minus 9 is because x^8+x^4+x^3+x+1
+		ax=(px<<(power-9))^ax;
+	}	
+
+	bitset<8> ret_val;
+	for(int i=0;i<8;i++){
+		ret_val[i]=ax[i];
+	}
+
+	return byte(ret_val.to_ulong());
+}	
+
+byte GF_naive(byte coeff, byte mes){
 	bitset<16> px(0b0100011011);
 	bitset<16> ax;
 	for(int i=0;i<8;i++){
@@ -120,41 +153,12 @@ byte GF(byte coeff, byte mes){
 		while(ax.to_ulong()>=0x100){
 			power=0;
 			bitset<16> tmp=ax;
-			// cout<<"px<<power"<<endl;
-			// cout<<tmp<<endl;
 			while(tmp.to_ulong()>0){
 				power++;
 				tmp=tmp>>1;
 			}
-			// cout<<power<<endl;
-			// cout<<(px<<(power-9))<<endl;
-			// cout<<ax<<endl;
 			ax=(px<<(power-9))^ax;
-			// cout<<ax<<endl;
 		}	
-
-		// bitset<16> tmp2(0x00FF);
-		// if(mes.to_ulong()>0x80){
-		// 	ax=(((ax<<1)^px&tmp2)^((ax<<2)^(px<<1)&tmp2))^((ax<<3)^(px<<2)&tmp2);
-		// 	// ax=(ax<<1)^(ax<<2)^(ax<<3)^px;
-		// }
-		// else{
-		// 	bitset<16> tmp;
-		// 	for(int i=1;i<=3;i++){
-		// 		if((ax<<i).to_ulong()>0x80){
-		// 			tmp^=((ax<<i)^px);
-		// 		}
-		// 		else{
-		// 			tmp^=(ax<<i);	
-		// 		}
-		// 		if(tmp.to_ulong()>0x80){
-
-		// 			tmp=tmp^px;
-		// 		}
-		// 	}	
-		// 	ax=tmp;
-			// ax=(ax<<1)^(ax<<2)^(ax<<3);
-		// }	
 	}
 	else if(coeff==0x01){
 		ax=ax;
@@ -310,7 +314,7 @@ void InvShiftRows(byte in[4*Nb]){
 	in[14]=in[15];
 	in[15]=temp;
 }
-void InvMixColumns(byte in[4*Nb]){
+void InvMixColumns2(byte in[4*Nb]){
 	byte tmp[4];
 	for(int i=0; i<4; i++){
 		// store since, since it will modify previous value
@@ -330,7 +334,7 @@ void InvMixColumns(byte in[4*Nb]){
 
 
 }
-void InvMixColumns2(byte in[4*Nb]){
+void InvMixColumns(byte in[4*Nb]){
 	byte tmp[4];
 	for(int i=0; i<4; i++){
 		// store since, since it will modify previous value
@@ -359,18 +363,14 @@ void decrypt(byte in[4*Nb],byte out[4*Nb],word w[Nb*(Nr+1)]){
 	// }
 
 // start 10 rounds encryption
-	for(int round=Nr-1;round>Nr-2;round--){
+	for(int round=Nr-1;round>0;round--){
 		InvShiftRows(in);
-
 		InvSubBytes(in);
 
 		for(int i=0;i<4;i++){
 			key[i]=w[round*Nb+i];
 		}
 		AddRoundKey(in,key);
-	for(int i=0;i<16;i++){
-		cout<<in[i]<<endl;
-	}
 		InvMixColumns(in);
 
 	}
@@ -378,7 +378,7 @@ void decrypt(byte in[4*Nb],byte out[4*Nb],word w[Nb*(Nr+1)]){
 
 // round 1
 	InvShiftRows(in);
-	// InvSubBytes(in);
+	InvSubBytes(in);
 	for(int i=0;i<4;i++){
 		key[i]=w[i];
 	}
@@ -388,6 +388,10 @@ void decrypt(byte in[4*Nb],byte out[4*Nb],word w[Nb*(Nr+1)]){
 	for(int i=0;i<4*Nb;i++){
 		out[i]=in[i];
 	}
+
+	// for(int i=0;i<16;i++){
+	// 	cout<<in[i]<<endl;
+	// }
 
 }
 
