@@ -49,7 +49,7 @@ int main(){
 	// cout<<bit_key512<<endl<<endl;
 	// generate ipad
 	bitset<512> bit_ipad;
-	for(int i=0;i<B;i++){
+	for(int i=0;i<B1;i++){
 		for(int j=0;j<8;j++){
 			bit_ipad[i*8+j]=ipad[j];
 		}
@@ -57,7 +57,7 @@ int main(){
 	cout<<bit_ipad<<endl;
 	// generate opad
 	bitset<512> bit_opad;
-	for(int i=0;i<B;i++){
+	for(int i=0;i<B1;i++){
 		for(int j=0;j<8;j++){
 			bit_opad[i*8+j]=opad[j];
 		}
