@@ -9,7 +9,8 @@ extern bitset<48> subKey[16];
 
 int main(){
 	// string message="children";
-	string message="Welcome to Des";
+	// string message="Welcome to Des";
+	string message="Welcomee";
 	string key="together";
 	// string message="helloooo";
 	// string key="together";
@@ -46,6 +47,7 @@ int main(){
 		bitset<64> encrypt_mes=encrypt(bit_message,bit_key);
 		// cout<<"encrypted message: "<< encrypt_mes<<endl;
 		string cip_message=binaryToascii(encrypt_mes);
+		cout<<"ciphertext is "<<encrypt_mes<<endl;
 		cout<<"ciphertext is "<<cip_message<<endl;
 
 	// decrypting message
@@ -53,6 +55,7 @@ int main(){
 		// cout<<"decrypted message: "<< decrypt_mes<<endl;
 	// convert binary to ascii
 		string ori_message=binaryToascii(decrypt_mes);
+		cout<<"plaintext is "<<decrypt_mes<<endl;
 		cout<<"plaintext is "<<ori_message<<endl;
 	}	
 
